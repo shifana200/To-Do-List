@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="/style.css"> <!-- Corrected CSS link -->
+</head>
+<body>
+    <h1>To-Do List</h1>
+    <ul>
+        <% tasks.forEach((task, index) => { %>
+            <li>
+                <%= task %> <!-- Display each task -->
+                <form action="/delete" method="POST" style="display:inline;">
+                    <button name="index" value="<%= index %>" type="submit">Delete</button>
+                </form>
+            </li>
+        <% }); %>
+    </ul>
+
+    <form action="/add" method="POST">
+        <input type="text" name="task" placeholder="New Task" required>
+        <button type="submit">Add Task</button>
+    </form>
+</body>
+</html>
