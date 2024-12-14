@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive OTP Verification Page</title>
+  <link rel="stylesheet" href="/css/verify-otp.css">
+ 
+</head>
+<body>
+  <div class="container">
+    <div class="left-panel">
+      <a href="http://localhost:4000/signup" class="back-arrow">←</a>
+      <h1>Verify your Account</h1>
+      <p>The One-Time Password is sent. Please Enter your OTP.</p>
+      <!-- <form  id="otpForm"  method="post" onsubmit="return validateOTPForm()">
+        <div  id="otp"  class="otp-input">
+          <input  type="text" maxlength="1">
+          <input type="text" maxlength="1">
+          <input type="text" maxlength="1">
+          <input type="text" maxlength="1">
+          <input type="text" maxlength="1">
+          <input type="text" maxlength="1">
+        </div>
+        <p class="timer">
+          <span>00:30</span> <a href="#" class="resend-otp">Resend OTP</a>
+        </p>
+        <button type="submit" class="verify-btn">Verify</button>
+      </form> -->
+
+
+      <form id="otpForm" method="post" onsubmit="return validateOTPForm(event)">
+        <div id="otp" class="otp-input">
+          <input type="text" maxlength="1" name="otp" oninput="moveToNext(this, 1)">
+          <input type="text" maxlength="1" name="otp" oninput="moveToNext(this, 2)">
+          <input type="text" maxlength="1" name="otp" oninput="moveToNext(this, 3)">
+          <input type="text" maxlength="1" name="otp" oninput="moveToNext(this, 4)">
+          <input type="text" maxlength="1" name="otp" oninput="moveToNext(this, 5)">
+          <input type="text" maxlength="1" name="otp" oninput="moveToNext(this, 6)">
+        </div>
+        <p class="timer">
+          <span>00:30</span> <a href="#" class="resend-otp">Resend OTP</a>
+        </p>
+        <button type="submit" class="verify-btn">Verify</button>
+      </form>
+      
+    </div>
+    <div class="right-panel">
+      <img src="/images/verifypage_img.jpg" alt="Products">
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+    // function validateOTPForm() {
+    //     const otpInput = document.getElementById("otp").value;
+    
+
+    document.querySelectorAll("#otp input").forEach(input => {
+    input.addEventListener("input", function () {
+        if (this.value.length === 1) {
+            this.nextElementSibling?.focus(); // Move to the next field
+        }
+    });
+});
+
+function validateOTPForm(event) {
+  event.preventDefault(); // Prevent the form from submitting immediately
+  
+  // Collect the OTP from all the inputs
+  const otpFields = document.querySelectorAll('input[name="otp"]');
+  let otp = '';
+  otpFields.forEach(field => otp += field.value);
+  
+  if (otp.length === 6) {
+    // Send the OTP to the server (via AJAX or form submit)
+    submitOtp(otp);
+  } else {
+    alert("Please enter a complete OTP.");
+  }
+}
+
+function submitOtp(otp) {
+
+    const otpArray = Array.from(document.querySelectorAll('input[name="otp"]')).map(input => input.value).join('');
+  // Use AJAX to send the OTP to the server
+  fetch('/verify-otp', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ otp: otpArray }) // Send the OTP as a JSON payload
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // Handle success
+      window.location.href = data.redirectUrl; // Redirect to login or home
+    } else {
+      // Handle failure
+      alert(data.message);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+}
+
+    
+
+    </script>
+    
+
+
+</body>
+</html>
